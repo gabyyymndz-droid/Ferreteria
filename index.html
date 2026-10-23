@@ -3,16 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>FerroMax · Prototipo de app</title>
+<title>FerroMax · App</title>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <style>
-:root{--bg:#EEF1F7;--ink:#021F5E;--card:#fff;--mut:#5b6785;--line:#dde3f0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1226;--ink:#e8edfb;--card:#131c38;--mut:#9aa7cc;--line:#26335c}}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:16px}
+:root{--bg:#EEF1F7;--ink:#021F5E;--card:#fff;--mut:#5b6785;--line:#dde3f0}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1226;--ink:#e8edfb;--card:#131c38;--mut:#9aa7cc;--line:#26335c}}
+body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px}
 .phone{width:360px;height:740px;border:10px solid #021F5E;border-radius:38px;background:#fff;position:relative;overflow:hidden;color:#021F5E;box-shadow:0 20px 50px rgba(2,31,94,.25)}
-#scr{height:100%;overflow-y:auto;padding-bottom:84px}
+#scr{height:100%;overflow-y:auto;padding-bottom:20px}
 #scr::-webkit-scrollbar{display:none}
 .cta{background:#F46A06;color:#fff;font-weight:700;border-radius:14px;min-height:52px;width:100%;transition:.15s}
 .cta:hover{background:#d85a00}.cta:active{transform:scale(.97);background:#b84c00}
@@ -24,47 +22,16 @@ body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Roboto,Helveti
 .card:hover{box-shadow:0 6px 16px rgba(2,31,94,.12);transform:translateY(-1px)}
 .chip{border:1.5px solid #dde3f0;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:600;white-space:nowrap;min-height:34px;transition:.15s;background:#fff}
 .chip:hover{border-color:#F46A06}.chip.on{background:#021F5E;color:#fff;border-color:#021F5E}
-.nav{position:absolute;bottom:0;left:0;right:0;height:68px;background:#fff;border-top:1px solid #dde3f0;display:flex}
-.nav button{flex:1;font-size:11px;font-weight:600;color:#5b6785;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.nav button.on{color:#F46A06}.nav button:hover{background:#f4f6fb}
-.dbtn{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-weight:600;font-size:14px;text-align:left;transition:.15s;min-height:44px}
-.dbtn:hover{border-color:#F46A06}.dbtn.on{background:#F46A06;color:#fff;border-color:#F46A06}
-body.solo .side{display:none}
 .dr-i{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:0 20px;font-weight:600;text-align:left;transition:.15s}.dr-i:hover{background:#f4f6fb}.dr-i:active{background:#e4e9f5}.dr-i.on{color:#F46A06;background:#FFF3EA}
-details{border-top:1px solid var(--line);padding:12px 0}summary{cursor:pointer;font-weight:700}
 </style>
 </head>
 <body>
-<div class="max-w-5xl mx-auto p-4 md:p-8 flex flex-col lg:flex-row gap-8 items-center lg:items-start justify-center">
-  <div class="phone shrink-0"><div id="scr"></div><div id="ov" class="absolute inset-0 bg-black/40 z-20 hidden" onclick="menu(false)"></div><aside id="dr" class="absolute top-0 bottom-0 left-0 w-[78%] bg-white z-30 transition-transform duration-200 -translate-x-full flex flex-col"></aside><div id="toast" class="absolute left-4 right-4 bottom-24 bg-[#021F5E] text-white text-sm font-semibold rounded-xl px-4 py-3 hidden"></div></div>
 
-  <div class="side w-full max-w-md space-y-4">
-    <div class="panel p-5">
-      <h1 class="text-xl font-bold">FerroMax · prototipo navegable</h1>
-      <p class="text-sm mt-1" style="color:var(--mut)">Flujo: Login → Inicio → Catálogo → Compra. Tarea: comprar un taladro inalámbrico.</p>
-      <h2 class="font-bold mt-4 mb-2 text-sm">Demostrar estados</h2>
-      <div class="grid grid-cols-2 gap-2">
-        <button class="dbtn" id="d-err" onclick="demo('err')">Error de login</button>
-        <button class="dbtn" id="d-empty" onclick="demo('empty')">Carrito vacío</button>
-        <button class="dbtn" id="d-none" onclick="demo('none')">Catálogo sin resultados</button>
-        <button class="dbtn" id="d-pay" onclick="demo('pay')">Error de pago</button>
-      </div>
-      <h2 class="font-bold mt-4 mb-2 text-sm">Ir a pantalla</h2>
-      <div class="grid grid-cols-4 gap-2">
-        <button class="dbtn" onclick="go('login')">Login</button><button class="dbtn" onclick="go('home')">Inicio</button>
-        <button class="dbtn" onclick="go('catalog')">Catálogo</button><button class="dbtn" onclick="go('checkout')">Compra</button>
-      </div>
-      <button class="dbtn w-full mt-2" onclick="reset()">Reiniciar prototipo</button>
-      <button class="dbtn w-full mt-2 !bg-[#021F5E] !text-white" onclick="solo(true)">Ver solo la pantalla (para exportar)</button>
-    </div>
-    <div class="panel p-5">
-      <h2 class="font-bold mb-1">Decisiones de UX</h2>
-      <details open><summary>1. Fitts: CTA grande al alcance del pulgar</summary><p class="text-sm mt-2" style="color:var(--mut)">“Agregar”, “Continuar” y “Pagar ahora” son botones naranjas de al menos 48–52 px de alto, con contraste alto sobre fondo claro. “Pagar ahora” ocupa todo el ancho y queda fijo en la parte inferior, donde el pulgar llega sin estirarse. Un objetivo grande y cercano reduce el tiempo y los errores de toque.</p></details>
-      <details><summary>2. Hick: solo 4 categorías y filtros clave</summary><p class="text-sm mt-2" style="color:var(--mut)">El inicio muestra 4 categorías (Eléctricas, Manuales, Fijación, Pinturas) en lugar de un menú largo, y el catálogo filtra con chips de un toque. Menos opciones por pantalla acortan el tiempo de decisión.</p></details>
-      <details><summary>3. Jakob: convenciones de e-commerce</summary><p class="text-sm mt-2" style="color:var(--mut)">Logo arriba a la izquierda, carrito con contador arriba a la derecha y barra de navegación inferior con Inicio, Catálogo y Carrito. El usuario ya conoce estos patrones y no necesita aprenderlos.</p></details>
-      <details><summary>4. Reconocimiento sobre recuerdo</summary><p class="text-sm mt-2" style="color:var(--mut)">Chips de búsqueda rápida (“Taladro”, “Tornillos”), etiquetas de stock visibles en cada tarjeta y el resumen del producto siempre visible en la compra: el usuario no tiene que recordar nada.</p></details>
-    </div>
-  </div>
+<div class="phone">
+  <div id="scr"></div>
+  <div id="ov" class="absolute inset-0 bg-black/40 z-20 hidden" onclick="menu(false)"></div>
+  <aside id="dr" class="absolute top-0 bottom-0 left-0 w-[78%] bg-white z-30 transition-transform duration-200 -translate-x-full flex flex-col"></aside>
+  <div id="toast" class="absolute left-4 right-4 bottom-24 bg-[#021F5E] text-white text-sm font-semibold rounded-xl px-4 py-3 hidden"></div>
 </div>
 
 <script>
@@ -80,7 +47,7 @@ const P=[
 {id:9,n:"Rodillo 9\" con bandeja Wooster",p:7.8,c:"Pinturas",s:18,i:"🖌️"}];
 const CATS=["Eléctricas","Manuales","Fijación","Pinturas"],CI={Eléctricas:"⚡",Manuales:"🛠️",Fijación:"🔩",Pinturas:"🎨"};
 let S;const f=n=>"$"+n.toFixed(2),$=id=>document.getElementById(id);
-function init(){S={scr:"login",cart:{},cat:"Todos",q:"",loginErr:false,pay:null,payErr:false,done:false,email:"",pass:"",forceNone:false};}
+function init(){S={scr:"login",cart:{},cat:"Todos",q:"",loginErr:false,pay:null,payErr:false,done:false,email:"",pass:""};}
 init();
 const count=()=>Object.values(S.cart).reduce((a,b)=>a+b,0);
 function go(s){menu(false);S.scr=s;S.done=false;if(s!=="checkout")S.payErr=false;draw()}
@@ -90,20 +57,10 @@ function qty(id,d){S.cart[id]=(S.cart[id]||0)+d;const p=P.find(x=>x.id===id);if(
 function hdrUpdate(){const b=$("badge");if(b){b.textContent=count();b.style.display=count()?"flex":"none"}}
 function login(){
   const e=$("em").value.trim(),pw=$("pw").value;S.email=e;S.pass=pw;
-  S.loginErr=!(e.includes("@")&&pw.length>=6)||S.loginErr&&e==="error@x.com";
+  S.loginErr=!(e.includes("@")&&pw.length>=6);
   if(S.loginErr)return draw();go("home")}
-function demo(k){
-  S.forceNone=false;
-  if(k==="err"){S.scr="login";S.loginErr=true}
-  if(k==="empty"){S.cart={};S.scr="checkout";S.done=false}
-  if(k==="none"){S.scr="catalog";S.q="zzz";S.cat="Todos"}
-  if(k==="pay"){if(!count())S.cart[1]=1;S.scr="checkout";S.pay=null;S.payErr=true;S.done=false}
-  draw()}
 function reset(){init();draw()}
 function menu(o){$("dr").classList.toggle("-translate-x-full",!o);$("ov").classList.toggle("hidden",!o)}
-function solo(on){document.body.classList.toggle("solo",on);if(on){try{history.replaceState(null,"","#solo")}catch(e){}}}
-document.addEventListener("keydown",e=>{if(e.key==="Escape")solo(false)});
-if(location.hash==="#solo")solo(true);
 function drawer(){const it=(k,ic,l,a,on)=>`<button class="dr-i ${on?"on":""}" onclick="${a}"><span class="text-xl">${ic}</span>${l}</button>`;
 return `<div class="flex items-center justify-between px-5 h-16 bg-[#021F5E] text-white"><div class="font-extrabold text-lg">Hola, Carlos 👋</div><button aria-label="Cerrar menú" class="w-11 h-11 rounded-full hover:bg-white/10 text-xl" onclick="menu(false)">✕</button></div>
 ${it("h","🏠","Inicio","go('home')",S.scr==="home")}${it("c","📋","Catálogo completo","S.cat='Todos';S.q='';go('catalog')",S.scr==="catalog"&&S.cat==="Todos")}
@@ -152,8 +109,6 @@ function draw(){
  $("scr").innerHTML=V[S.scr]();
  if(S.scr==="catalog")list();
  $("dr").innerHTML=drawer();
- $("scr").style.paddingBottom="20px";
- ["err","empty","none","pay"].forEach(k=>$("d-"+k).classList.toggle("on",{err:S.scr==="login"&&S.loginErr,empty:S.scr==="checkout"&&!count()&&!S.done,none:S.scr==="catalog"&&!filtered().length,pay:S.scr==="checkout"&&S.payErr}[k]));
 }
 draw();
 </script>
