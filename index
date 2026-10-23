@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FerroMax · Prototipo de app</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+:root{--bg:#EEF1F7;--ink:#021F5E;--card:#fff;--mut:#5b6785;--line:#dde3f0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1226;--ink:#e8edfb;--card:#131c38;--mut:#9aa7cc;--line:#26335c}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;margin:0}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px}
+.phone{width:360px;height:740px;border:10px solid #021F5E;border-radius:38px;background:#fff;position:relative;overflow:hidden;color:#021F5E;box-shadow:0 20px 50px rgba(2,31,94,.25)}
+#scr{height:100%;overflow-y:auto;padding-bottom:84px}
+#scr::-webkit-scrollbar{display:none}
+.cta{background:#F46A06;color:#fff;font-weight:700;border-radius:14px;min-height:52px;width:100%;transition:.15s}
+.cta:hover{background:#d85a00}.cta:active{transform:scale(.97);background:#b84c00}
+.cta:disabled{background:#c9ceda;cursor:not-allowed}
+.inp{width:100%;min-height:48px;border:2px solid #dde3f0;border-radius:12px;padding:0 14px;outline:none;transition:.15s;background:#fff;color:#021F5E}
+.inp:hover{border-color:#9db0dd}.inp:focus{border-color:#2563EB;box-shadow:0 0 0 3px #2563eb33}
+.inp.err{border-color:#D92D20;background:#fff5f4}
+.card{border:1px solid #dde3f0;border-radius:14px;background:#fff;transition:.15s}
+.card:hover{box-shadow:0 6px 16px rgba(2,31,94,.12);transform:translateY(-1px)}
+.chip{border:1.5px solid #dde3f0;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:600;white-space:nowrap;min-height:34px;transition:.15s;background:#fff}
+.chip:hover{border-color:#F46A06}.chip.on{background:#021F5E;color:#fff;border-color:#021F5E}
+.nav{position:absolute;bottom:0;left:0;right:0;height:68px;background:#fff;border-top:1px solid #dde3f0;display:flex}
+.nav button{flex:1;font-size:11px;font-weight:600;color:#5b6785;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.nav button.on{color:#F46A06}.nav button:hover{background:#f4f6fb}
+.dbtn{border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-weight:600;font-size:14px;text-align:left;transition:.15s;min-height:44px}
+.dbtn:hover{border-color:#F46A06}.dbtn.on{background:#F46A06;color:#fff;border-color:#F46A06}
+body.solo .side{display:none}
+.dr-i{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:0 20px;font-weight:600;text-align:left;transition:.15s}.dr-i:hover{background:#f4f6fb}.dr-i:active{background:#e4e9f5}.dr-i.on{color:#F46A06;background:#FFF3EA}
+details{border-top:1px solid var(--line);padding:12px 0}summary{cursor:pointer;font-weight:700}
+</style>
+</head>
+<body>
+<div class="max-w-5xl mx-auto p-4 md:p-8 flex flex-col lg:flex-row gap-8 items-center lg:items-start justify-center">
+  <div class="phone shrink-0"><div id="scr"></div><div id="ov" class="absolute inset-0 bg-black/40 z-20 hidden" onclick="menu(false)"></div><aside id="dr" class="absolute top-0 bottom-0 left-0 w-[78%] bg-white z-30 transition-transform duration-200 -translate-x-full flex flex-col"></aside><div id="toast" class="absolute left-4 right-4 bottom-24 bg-[#021F5E] text-white text-sm font-semibold rounded-xl px-4 py-3 hidden"></div></div>
+
+  <div class="side w-full max-w-md space-y-4">
+    <div class="panel p-5">
+      <h1 class="text-xl font-bold">FerroMax · prototipo navegable</h1>
+      <p class="text-sm mt-1" style="color:var(--mut)">Flujo: Login → Inicio → Catálogo → Compra. Tarea: comprar un taladro inalámbrico.</p>
+      <h2 class="font-bold mt-4 mb-2 text-sm">Demostrar estados</h2>
+      <div class="grid grid-cols-2 gap-2">
+        <button class="dbtn" id="d-err" onclick="demo('err')">Error de login</button>
+        <button class="dbtn" id="d-empty" onclick="demo('empty')">Carrito vacío</button>
+        <button class="dbtn" id="d-none" onclick="demo('none')">Catálogo sin resultados</button>
+        <button class="dbtn" id="d-pay" onclick="demo('pay')">Error de pago</button>
+      </div>
+      <h2 class="font-bold mt-4 mb-2 text-sm">Ir a pantalla</h2>
+      <div class="grid grid-cols-4 gap-2">
+        <button class="dbtn" onclick="go('login')">Login</button><button class="dbtn" onclick="go('home')">Inicio</button>
+        <button class="dbtn" onclick="go('catalog')">Catálogo</button><button class="dbtn" onclick="go('checkout')">Compra</button>
+      </div>
+      <button class="dbtn w-full mt-2" onclick="reset()">Reiniciar prototipo</button>
+      <button class="dbtn w-full mt-2 !bg-[#021F5E] !text-white" onclick="solo(true)">Ver solo la pantalla (para exportar)</button>
+    </div>
+    <div class="panel p-5">
+      <h2 class="font-bold mb-1">Decisiones de UX</h2>
+      <details open><summary>1. Fitts: CTA grande al alcance del pulgar</summary><p class="text-sm mt-2" style="color:var(--mut)">“Agregar”, “Continuar” y “Pagar ahora” son botones naranjas de al menos 48–52 px de alto, con contraste alto sobre fondo claro. “Pagar ahora” ocupa todo el ancho y queda fijo en la parte inferior, donde el pulgar llega sin estirarse. Un objetivo grande y cercano reduce el tiempo y los errores de toque.</p></details>
+      <details><summary>2. Hick: solo 4 categorías y filtros clave</summary><p class="text-sm mt-2" style="color:var(--mut)">El inicio muestra 4 categorías (Eléctricas, Manuales, Fijación, Pinturas) en lugar de un menú largo, y el catálogo filtra con chips de un toque. Menos opciones por pantalla acortan el tiempo de decisión.</p></details>
+      <details><summary>3. Jakob: convenciones de e-commerce</summary><p class="text-sm mt-2" style="color:var(--mut)">Logo arriba a la izquierda, carrito con contador arriba a la derecha y barra de navegación inferior con Inicio, Catálogo y Carrito. El usuario ya conoce estos patrones y no necesita aprenderlos.</p></details>
+      <details><summary>4. Reconocimiento sobre recuerdo</summary><p class="text-sm mt-2" style="color:var(--mut)">Chips de búsqueda rápida (“Taladro”, “Tornillos”), etiquetas de stock visibles en cada tarjeta y el resumen del producto siempre visible en la compra: el usuario no tiene que recordar nada.</p></details>
+    </div>
+  </div>
+</div>
+
+<script>
+const P=[
+{id:1,n:"Taladro Percutor Inalámbrico 20V DeWalt",p:129.99,c:"Eléctricas",s:12,i:"🔧"},
+{id:2,n:"Sierra Circular 7-1/4\" 1500W Bosch",p:89.9,c:"Eléctricas",s:5,i:"🪚"},
+{id:3,n:"Juego de Destornilladores 6 piezas Stanley",p:14.5,c:"Manuales",s:40,i:"🪛"},
+{id:4,n:"Martillo de Uña 16 oz Truper",p:11.75,c:"Manuales",s:3,i:"🔨"},
+{id:5,n:"Cinta Métrica 5 m Truper",p:5.25,c:"Manuales",s:60,i:"📏"},
+{id:6,n:"Tornillos Drywall 1-5/8\" (caja 100)",p:3.9,c:"Fijación",s:0,i:"🔩"},
+{id:7,n:"Tacos Expansivos 8 mm (bolsa 50)",p:4.25,c:"Fijación",s:25,i:"⚙️"},
+{id:8,n:"Pintura Látex Blanco 1 galón Sherwin-Williams",p:32,c:"Pinturas",s:9,i:"🎨"},
+{id:9,n:"Rodillo 9\" con bandeja Wooster",p:7.8,c:"Pinturas",s:18,i:"🖌️"}];
+const CATS=["Eléctricas","Manuales","Fijación","Pinturas"],CI={Eléctricas:"⚡",Manuales:"🛠️",Fijación:"🔩",Pinturas:"🎨"};
+let S;const f=n=>"$"+n.toFixed(2),$=id=>document.getElementById(id);
+function init(){S={scr:"login",cart:{},cat:"Todos",q:"",loginErr:false,pay:null,payErr:false,done:false,email:"",pass:"",forceNone:false};}
+init();
+const count=()=>Object.values(S.cart).reduce((a,b)=>a+b,0);
+function go(s){menu(false);S.scr=s;S.done=false;if(s!=="checkout")S.payErr=false;draw()}
+function toast(t){const e=$("toast");e.textContent=t;e.classList.remove("hidden");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add("hidden"),1600)}
+function add(id){const p=P.find(x=>x.id===id);if((S.cart[id]||0)>=p.s)return toast("Stock máximo alcanzado");S.cart[id]=(S.cart[id]||0)+1;toast("Agregado: "+p.n.split(" ").slice(0,2).join(" "));hdrUpdate()}
+function qty(id,d){S.cart[id]=(S.cart[id]||0)+d;const p=P.find(x=>x.id===id);if(S.cart[id]>p.s)S.cart[id]=p.s;if(S.cart[id]<=0)delete S.cart[id];draw()}
+function hdrUpdate(){const b=$("badge");if(b){b.textContent=count();b.style.display=count()?"flex":"none"}}
+function login(){
+  const e=$("em").value.trim(),pw=$("pw").value;S.email=e;S.pass=pw;
+  S.loginErr=!(e.includes("@")&&pw.length>=6)||S.loginErr&&e==="error@x.com";
+  if(S.loginErr)return draw();go("home")}
+function demo(k){
+  S.forceNone=false;
+  if(k==="err"){S.scr="login";S.loginErr=true}
+  if(k==="empty"){S.cart={};S.scr="checkout";S.done=false}
+  if(k==="none"){S.scr="catalog";S.q="zzz";S.cat="Todos"}
+  if(k==="pay"){if(!count())S.cart[1]=1;S.scr="checkout";S.pay=null;S.payErr=true;S.done=false}
+  draw()}
+function reset(){init();draw()}
+function menu(o){$("dr").classList.toggle("-translate-x-full",!o);$("ov").classList.toggle("hidden",!o)}
+function solo(on){document.body.classList.toggle("solo",on);if(on){try{history.replaceState(null,"","#solo")}catch(e){}}}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")solo(false)});
+if(location.hash==="#solo")solo(true);
+function drawer(){const it=(k,ic,l,a,on)=>`<button class="dr-i ${on?"on":""}" onclick="${a}"><span class="text-xl">${ic}</span>${l}</button>`;
+return `<div class="flex items-center justify-between px-5 h-16 bg-[#021F5E] text-white"><div class="font-extrabold text-lg">Hola, Carlos 👋</div><button aria-label="Cerrar menú" class="w-11 h-11 rounded-full hover:bg-white/10 text-xl" onclick="menu(false)">✕</button></div>
+${it("h","🏠","Inicio","go('home')",S.scr==="home")}${it("c","📋","Catálogo completo","S.cat='Todos';S.q='';go('catalog')",S.scr==="catalog"&&S.cat==="Todos")}
+<div class="px-5 pt-4 pb-1 text-xs font-bold text-[#5b6785]">Categorías</div>${CATS.map(c=>it(c,CI[c],c,`S.cat='${c}';S.q='';go('catalog')`,S.scr==="catalog"&&S.cat===c)).join("")}
+<div class="border-t my-2" style="border-color:#dde3f0"></div>${it("k","🛒","Mi carrito ("+count()+")","go('checkout')",S.scr==="checkout")}
+<div class="mt-auto border-t" style="border-color:#dde3f0">${it("o","🚪","Cerrar sesión","reset()",false)}</div>`}
+function pay(){if(!S.pay){S.payErr=true;return draw()}S.done=true;S.cart={};draw()}
+function header(){return `<div class="sticky top-0 z-10 bg-white flex items-center justify-between px-4 h-14 border-b" style="border-color:#dde3f0">
+<div class="flex items-center gap-1 font-extrabold text-lg"><button aria-label="Abrir menú" onclick="menu(true)" class="w-12 h-12 -ml-3 rounded-full hover:bg-[#f4f6fb] active:scale-95 text-2xl flex items-center justify-center">☰</button><span class="bg-[#F46A06] text-white rounded-lg w-8 h-8 flex items-center justify-center mr-1">F</span>FerroMax</div>
+<button aria-label="Carrito" onclick="go('checkout')" class="relative w-12 h-12 rounded-full hover:bg-[#f4f6fb] active:scale-95 text-2xl flex items-center justify-center">🛒<span id="badge" class="absolute top-1 right-0 bg-[#F46A06] text-white text-[11px] font-bold rounded-full min-w-[20px] h-5 px-1 items-center justify-center" style="display:${count()?"flex":"none"}">${count()}</span></button></div>`}
+function search(){return `<div class="px-4 pt-4"><div class="relative"><span class="absolute left-3 top-3">🔍</span><input id="q" class="inp pl-10" placeholder="Buscar herramientas, tornillos…" value="${S.q}" oninput="S.q=this.value;S.scr==='catalog'?list():0" onkeydown="if(event.key==='Enter'){S.scr='catalog';draw()}"></div>
+<div class="${S.scr==="home"?"flex":"hidden"} flex-wrap gap-1.5 mt-3">${["Taladro","Tornillos","Pintura","Martillo"].map(t=>`<button class="chip" onclick="S.q='${t}';S.cat='Todos';go('catalog')">${t}</button>`).join("")}</div></div>`}
+function pcard(p){const out=p.s===0,low=p.s>0&&p.s<=5;
+return `<div class="card p-3 flex gap-3"><div class="w-20 h-20 rounded-xl bg-[#EEF1F7] flex items-center justify-center text-4xl shrink-0">${p.i}</div>
+<div class="flex-1 min-w-0"><div class="text-[11px] font-semibold text-[#5b6785]">${p.c}</div><div class="font-semibold text-sm leading-tight">${p.n}</div>
+<div class="flex items-center justify-between mt-1"><span class="font-extrabold text-lg">${f(p.p)}</span><span class="text-xs font-bold ${out?"text-[#D92D20]":low?"text-[#B54708]":"text-[#067647]"}">${out?"Agotado":low?"Quedan "+p.s:"Disponible"}</span></div>
+<button ${out?"disabled":""} onclick="add(${p.id})" class="cta mt-2 text-sm" style="min-height:44px">${out?"Sin stock":"Agregar al carrito"}</button></div></div>`}
+function filtered(){const q=S.q.toLowerCase();return P.filter(p=>(S.cat==="Todos"||p.c===S.cat)&&(!q||p.n.toLowerCase().includes(q)||p.c.toLowerCase().includes(q)))}
+function list(){const l=filtered(),e=$("list");if(!e)return;e.innerHTML=l.length?l.map(pcard).join(""):`<div class="text-center py-10"><div class="text-6xl">🔎</div><div class="font-bold mt-3">Sin resultados para “${S.q}”</div><p class="text-sm text-[#5b6785] mt-1">Revisa la ortografía o prueba otra categoría.</p><button class="cta mt-4" onclick="S.q='';S.cat='Todos';draw()">Ver todo el catálogo</button></div>`}
+const V={
+login:()=>`<div class="px-6 pt-16"><div class="flex items-center gap-2 font-extrabold text-2xl justify-center"><span class="bg-[#F46A06] text-white rounded-xl w-11 h-11 flex items-center justify-center">F</span>FerroMax</div>
+<h2 class="text-xl font-bold mt-10">Inicia sesión</h2><p class="text-sm text-[#5b6785]">Accede para comprar y seguir tus pedidos.</p>
+${S.loginErr?`<div role="alert" class="mt-4 bg-[#FEF3F2] border border-[#D92D20] text-[#B42318] text-sm rounded-xl p-3 font-semibold">Correo o contraseña incorrectos. Revisa tus datos e intenta de nuevo.</div>`:""}
+<label class="block text-sm font-semibold mt-4 mb-1" for="em">Correo electrónico</label><input id="em" type="email" class="inp ${S.loginErr?"err":""}" placeholder="nombre@correo.com" value="${S.email}">
+<label class="block text-sm font-semibold mt-3 mb-1" for="pw">Contraseña</label><input id="pw" type="password" class="inp ${S.loginErr?"err":""}" placeholder="Mínimo 6 caracteres" value="${S.pass}">
+<button class="cta mt-6" onclick="login()">Iniciar sesión</button>
+<button class="w-full text-sm font-semibold text-[#2563EB] mt-4 min-h-[44px] hover:underline" onclick="$('em').value='carlos@correo.com';$('pw').value='herramienta1'">Usar datos de prueba</button></div>`,
+home:()=>`${header()}${search()}
+<h3 class="font-bold px-4 mt-5 mb-2">Categorías</h3><div class="grid grid-cols-2 gap-3 px-4">${CATS.map(c=>`<button class="card p-4 text-left min-h-[88px]" onclick="S.cat='${c}';S.q='';go('catalog')"><div class="text-3xl">${CI[c]}</div><div class="font-bold mt-1">${c}</div></button>`).join("")}</div>
+<h3 class="font-bold px-4 mt-5 mb-2">Destacados</h3><div class="px-4 space-y-3">${[1,3,8].map(i=>pcard(P.find(p=>p.id===i))).join("")}</div>`,
+catalog:()=>`${header()}${search()}<div class="flex flex-wrap gap-1.5 px-4 pt-3">${["Todos",...CATS].map(c=>`<button class="chip ${S.cat===c?"on":""}" onclick="S.cat='${c}';draw()">${c}</button>`).join("")}</div><div id="list" class="px-4 pt-3 space-y-3"></div>`,
+checkout:()=>{
+ const ids=Object.keys(S.cart).map(Number);
+ if(S.done)return `${header()}<div class="px-6 pt-16 text-center"><div class="text-7xl">✅</div><h2 class="text-xl font-bold mt-4">¡Pedido confirmado!</h2><p class="text-sm text-[#5b6785] mt-2">Pedido #FM-20481. Te avisaremos cuando esté listo para retirar o enviar.</p><button class="cta mt-8" onclick="go('catalog')">Seguir comprando</button></div>`;
+ if(!ids.length)return `${header()}<div class="px-6 pt-16 text-center"><div class="text-7xl">🛒</div><h2 class="text-xl font-bold mt-4">Tu carrito está vacío</h2><p class="text-sm text-[#5b6785] mt-2">Agrega herramientas y materiales para comenzar tu pedido.</p><button class="cta mt-8" onclick="go('catalog')">Explorar productos</button></div>`;
+ const sub=ids.reduce((a,i)=>a+P.find(p=>p.id===i).p*S.cart[i],0),iva=sub*.13,env=sub>=50?0:3.5,tot=sub+iva+env;
+ return `${header()}<div class="px-4 pt-4"><h2 class="text-lg font-bold">Resumen del pedido</h2>
+ <div class="space-y-2 mt-3">${ids.map(i=>{const p=P.find(x=>x.id===i);return `<div class="card p-3 flex gap-3 items-center"><div class="w-14 h-14 rounded-xl bg-[#EEF1F7] flex items-center justify-center text-3xl">${p.i}</div><div class="flex-1 min-w-0"><div class="text-sm font-semibold leading-tight">${p.n}</div><div class="font-bold">${f(p.p)}</div></div>
+ <div class="flex items-center gap-1"><button aria-label="Quitar uno" class="w-10 h-10 rounded-lg border font-bold hover:bg-[#f4f6fb] active:scale-90" onclick="qty(${i},-1)">−</button><span class="w-5 text-center font-bold">${S.cart[i]}</span><button aria-label="Agregar uno" class="w-10 h-10 rounded-lg border font-bold hover:bg-[#f4f6fb] active:scale-90" onclick="qty(${i},1)">+</button></div></div>`}).join("")}</div>
+ <div class="mt-4 text-sm space-y-1"><div class="flex justify-between"><span>Subtotal</span><span>${f(sub)}</span></div><div class="flex justify-between"><span>IVA (13%)</span><span>${f(iva)}</span></div><div class="flex justify-between"><span>Envío ${env?"":"(gratis desde $50)"}</span><span>${f(env)}</span></div><div class="flex justify-between text-lg font-extrabold border-t pt-2 mt-2"><span>Total</span><span>${f(tot)}</span></div></div>
+ <h3 class="font-bold mt-5 mb-2">Método de pago</h3>${S.payErr?`<div role="alert" class="mb-2 bg-[#FEF3F2] border border-[#D92D20] text-[#B42318] text-sm rounded-xl p-3 font-semibold">Selecciona un método de pago para continuar.</div>`:""}
+ <div class="space-y-2">${[["card","💳","Tarjeta de crédito o débito"],["transfer","🏦","Transferencia bancaria"],["cash","💵","Pago contra entrega"]].map(([k,ic,l])=>`<button onclick="S.pay='${k}';S.payErr=false;draw()" class="card w-full p-3 flex items-center gap-3 text-left min-h-[52px] ${S.pay===k?"!border-[#F46A06] !bg-[#FFF3EA]":""} ${S.payErr?"!border-[#D92D20]":""}"><span class="text-2xl">${ic}</span><span class="flex-1 font-semibold text-sm">${l}</span><span class="w-5 h-5 rounded-full border-2 ${S.pay===k?"border-[#F46A06] bg-[#F46A06]":"border-[#9db0dd]"}"></span></button>`).join("")}</div></div>
+ <div class="sticky bottom-0 bg-white px-4 py-3 mt-4 border-t" style="border-color:#dde3f0"><button class="cta text-lg" onclick="pay()">Pagar ahora · ${f(tot)}</button></div>`}
+};
+function draw(){
+ $("scr").innerHTML=V[S.scr]();
+ if(S.scr==="catalog")list();
+ $("dr").innerHTML=drawer();
+ $("scr").style.paddingBottom="20px";
+ ["err","empty","none","pay"].forEach(k=>$("d-"+k).classList.toggle("on",{err:S.scr==="login"&&S.loginErr,empty:S.scr==="checkout"&&!count()&&!S.done,none:S.scr==="catalog"&&!filtered().length,pay:S.scr==="checkout"&&S.payErr}[k]));
+}
+draw();
+</script>
+</body>
+</html>
